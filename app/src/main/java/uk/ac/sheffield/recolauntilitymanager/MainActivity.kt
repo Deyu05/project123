@@ -6,11 +6,15 @@ import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import uk.ac.sheffield.recolauntilitymanager.ui.navigation.*
 import uk.ac.sheffield.recolauntilitymanager.ui.theme.ReColaUntilityManagerTheme
 
 class MainActivity : ComponentActivity() {
@@ -19,9 +23,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             ReColaUntilityManagerTheme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    Greeting(
-                        name = "Android",
+                // Stores the current screen the app is on
+                var currentScreenName : ScreenName by rememberSaveable {
+                    mutableStateOf(ScreenName.default()) }
+
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    topBar = { SmallAppBar(currentScreenName) },
+                    bottomBar = { NavBar(currentScreenName) { currentScreenName = it } }
+                ) { innerPadding ->
+                    Text(
+                        text = "The current screen is the $currentScreenName screen",
                         modifier = Modifier.padding(innerPadding)
                     )
                 }
